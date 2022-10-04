@@ -5,18 +5,11 @@ declare(strict_types=1);
 namespace Rushil13579\AdvancedLeaderboards;
 
 use pocketmine\Player;
-
-use pocketmine\entity\{
-    Entity,
-    DataPropertyManager
-};
-
-use pocketmine\nbt\tag\{
-    FloatTag,
-    CompoundTag
-};
-
-use pocketmine\network\mcpe\protocol\SetActorDataPacket as SetEntityDataPacket;
+use pocketmine\entity\Entity;
+use pocketmine\nbt\tag\{FloatTag,CompoundTag};
+use pocketmine\network\mcpe\protocol\SetActorDataPacket;
+use pocketmine\network\mcpe\protocol\types\entity;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 
 /**
  * Trait containing methods used in various Slappers.
@@ -28,7 +21,7 @@ trait ALEntityTrait {
     /**
      * @return DataPropertyManager
      */
-    abstract public function getDataPropertyManager(): DataPropertyManager;
+    abstract public function getNetworkProperties(): DataPropertyManager;
 
     /**
      * @return string
@@ -44,7 +37,7 @@ trait ALEntityTrait {
         if (!$this->namedtag->hasTag("Scale", FloatTag::class)) {
             $this->namedtag->setFloat("Scale", 1.0, true);
         }
-        $this->getDataPropertyManager()->setFloat(Entity::DATA_SCALE, $this->namedtag->getFloat("Scale"));
+        $this->getNetworkProperties()->setFloat(Entity::DATA_SCALE, $this->namedtag->getFloat("Scale"));
     }
 
     public function tryChangeMovement(): void {
@@ -57,9 +50,9 @@ trait ALEntityTrait {
         }
 
         foreach($playerList as $p){
-            $playerData = $data ?? $this->getDataPropertyManager()->getAll();
+            $playerData = $data ?? $this->getNetworkProperties()->getAll();
             unset($playerData[self::DATA_NAMETAG]);
-            $pk = new SetEntityDataPacket();
+            $pk = new SetActorDataPacket();
             $pk->entityRuntimeId = $this->getId();
             $pk->metadata = $playerData;
             $p->dataPacket($pk);
@@ -76,7 +69,7 @@ trait ALEntityTrait {
                 $visibility = 2;
             }
         }
-        $scale = $this->getDataPropertyManager()->getFloat(Entity::DATA_SCALE);
+        $scale = $this->getNetworkProperties()->getFloat(Entity::DATA_SCALE);
         $this->namedtag->setInt("NameVisibility", $visibility, true);
         $this->namedtag->setFloat("Scale", $scale, true);
     }
