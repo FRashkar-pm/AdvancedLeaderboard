@@ -1,10 +1,10 @@
 name: AdvancedLeaderboards
 main: Rushil13579\AdvancedLeaderboards\Main
-api: 3.0.0
-version: 1.0.0
+api: 4.0.0
+version: 1.0.1-beta
 author: Rushil13579
-mcpe-protocol: [431]
-softdepend: [EconomyAPI]
+mcpe-protocol: [554]
+softdepend: [EconomyAPI,BedrockEconomy]
 
 permissions:
   advancedleaderboards.command.lb:
