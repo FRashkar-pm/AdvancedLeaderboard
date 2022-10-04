@@ -1,0 +1,118 @@
+# Configuration file for AdvancedLeaderboards by Rushil13579 | Rushil#2326
+
+# DO NOT TOUCH
+version: '1.0.0'
+
+
+# Enable this ONLY if EconomyAPI is installed and ONLY if you want to enable topmoney leaderboards [true => enabled, false => disabled]
+topmoney-leaderboard-support: true
+
+# Interval in which money data is updated in SECONDS [keeping it too low may cause performance issues]
+topmoney-update-time: 10
+
+# Interval in which xp data is update in SECONDS [keeping it too low may cause performance issues]
+topxp-update-time: 10
+
+# Interval in which the leaderboards are update in SECONDS [keeping it too low may cause performance issues]
+leaderboard-update-time: 10
+
+
+# ===== LEADERBOARD FORMAT =====
+
+# Global variables
+# {prefix} -> Plugin Prefix
+# {line} -> Line break
+# & -> Color
+
+# First line aka title of leaderboard [Use {leaderboard_name} for the name of the leaderboard]
+leaderboard-title: "&l&9[&cLeaderboard&9]{line}&r§b{leaderboard_name}{line}&9=========="
+
+# Number of players listed in the leaderboard [Default: 10 aka Top 10 players]
+leaderboard-length: 10
+
+# Format for lines of the leaderboards
+# {rank} -> Rank in leaderboard
+# {player_name} -> Name of the player
+# {value} -> Value of player's data [Eg: if it is topkills leaderboard then {value} will be number of kills]
+# Incase of online time leaderboard, {value} will be in the format {hours}H {minutes}M {seconds}S and this cannot be changed in the current version
+leaderboard-lines: 
+  - "&7#&b{rank}. &c{player_name}: &b{value}" # First line
+  - "&7#&b{rank}. &6{player_name}: &b{value}" # Second line
+  - "&7#&b{rank}. &e{player_name}: &b{value}" # Third line
+  - "&7#&b{rank}. &f{player_name}: &b{value}" # Fourth line and onwards
+
+
+# ===== MESSAGES =====
+
+# Global variables
+# {prefix} -> Plugin Prefix
+# {line} -> Line break
+# & -> color
+
+# Message sent when the command executer is not a player
+not-player-msg: "{prefix} &cPlease use this command in-game"
+
+# Message sent when the command executer does not have the required permissions
+no-perm-msg: "{prefix} &cYou do not have permission to run this command"
+
+# Message sent when the said player is invalid
+invalid-player-msg: "{prefix} &cInvalid Player"
+
+# Message sent when a player creates a leaderboard [Use {leaderboard_type} for the type of leaderboard created]
+leaderboard-created-msg: "{prefix} &aYou have successfully created a &6{leaderboard_type} &aleaderboard"
+
+# Message sent when a player now needs to select a leaderboard to be removed
+leaderboard-remove-select-msg: "{prefix} &aPlease punch the leaderboard you would like removed. If you would like to cancel this action, type &ccancel"
+
+# Message sent when a player cancels a leaderboard remove action
+leaderboard-remove-cancelled-msg: "{prefix} &aYou have successfully cancelled the leaderboard remove action"
+
+# Message sent when a player removes a leaderboard [Use {leaderboard_type} for the type of leaderboard removed]
+leaderboard-removed-msg: "{prefix} &aYou have successfully removed a &6{leaderboard_type} &aleaderboard"
+
+# Message sent when a player removes all leaderboard of a specific type [Use {leaderboard_type} for the type of leaderboard removed]
+leaderboard-type-removed-msg: "{prefix} &aYou have successfully removed all &6{leaderboard_type} &aleaderboards"
+
+# Message sent when a player removes all leaderboards
+leaderboard-all-removed-msg: "{prefix} &aYou have successfully removed all leaderboards"
+
+# Message sent when a player now needs to select a leaderboard to be moved
+leaderboard-move-select-msg: "{prefix} &aPlease punch the leaerboard you would like moved. If you would like to cancel this action, type &ccancel"
+
+# Message sent when a player cancels a leaderboard move action
+leaderboard-move-cancelled-msg: "{prefix} &aYou have successfully cancelled the leaderboard move action"
+
+# Message sent when a player selects a leaderboard to be moved
+leaderboard-move-confirm-msg: "{prefix} &aPlease move to location where you would like the leaderboard to be moved. Type &fconfirm &ato confirm the move or Type &ccancel &ato cancel the move"
+
+# Message sent when a player moves a leaderboard [Use {leaderboard_type} for the type of leaderboard moved]
+leaderboard-moved-msg: "{prefix} &aYou have successully moved a &6{leaderboard_type} &aleadeboard"
+
+# Stats Command Msg
+
+# Varibles 
+# Everything is of the player whoes stats are shown
+# {name} -> IGN
+# {joins} -> Number of joins
+# {kills} -> Number of kills
+# {deaths} -> Number of deaths
+# {kdr} -> Kill Death Ratio
+# {killsteak} -> Current killstreak
+# {highestkillstreak} -> Highest killstreak
+# {blocksplaced} -> Number of blocks placed
+# {blocksbroken} -> Number of blocks broken
+# {jumps} -> Number of jumps
+# {msgs} -> Number of messages sent
+# {xp} -> Xp Level
+# {crafts} -> Number of items crafted
+# {itemsconsumed} -> Number of items consumed
+
+# Online time variables
+# {hours}
+# {minutes}
+# {seconds}
+
+# {money} (only matters if topmoney-leaderboard-support is set to true and economyapi is installed)
+
+# Message sent when a player runs the stats command
+stats-msg: "&3=== &bSTATS &3==={line}&6Name: &e{name}{line}&6Joins: &e{joins}{line}&6Kills: &e{kills}{line}&6Deaths: &e{deaths}{line}&6KDR: &e{kdr}{line}&6Killstreak: &e{killstreak}{line}&6Highest Killstreak: &e{highestkillstreak}{line}&6Blocks Placed: &e{blocksplaced}{line}&6Blocks Broken: &e{blocksbroken}{line}&6Jumps: &e{jumps}{line}&6Messages: &e{msgs}{line}&6Xp: &e{xp}{line}&6Items Crafted: &e{crafts}{line}&6Items Consumed: &e{itemsconsumed}{line}&6OnlineTime: &e{hours}H {minutes}M {seconds}S"

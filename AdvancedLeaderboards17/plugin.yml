@@ -1,0 +1,11 @@
+name: AdvancedLeaderboards
+main: Rushil13579\AdvancedLeaderboards\Main
+api: 3.0.0
+version: 1.0.0
+author: Rushil13579
+mcpe-protocol: [431]
+softdepend: [EconomyAPI]
+
+permissions:
+  advancedleaderboards.command.lb:
+    description: Allows a player to access all leaderboard commands!
