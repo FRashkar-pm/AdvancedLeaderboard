@@ -6,10 +6,7 @@ namespace Rushil13579\AdvancedLeaderboards;
 
 use pocketmine\Player;
 
-use pocketmine\entity\{
-    Skin,
-    Human
-};
+use pocketmine\entity\{Skin,Human};
 
 use pocketmine\level\Level;
 
