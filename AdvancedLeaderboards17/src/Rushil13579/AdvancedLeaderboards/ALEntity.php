@@ -8,7 +8,7 @@ use pocketmine\Player;
 use pocketmine\entity\{Skin,Human};
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\SetActorDataPacket as SetEntityDataPacket;
+use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use Rushil13579\AdvancedLeaderboards\Main;
 
 class ALEntity extends Human {
