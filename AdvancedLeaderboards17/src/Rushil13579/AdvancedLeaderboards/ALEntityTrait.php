@@ -8,7 +8,6 @@ use pocketmine\Player;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\{FloatTag,CompoundTag};
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
-use pocketmine\network\mcpe\protocol\types\entity;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 
 /**
