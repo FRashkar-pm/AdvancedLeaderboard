@@ -17,11 +17,6 @@ class ALEntity extends Human {
     public $height = 0.0;
     public $width = 0.0;
 
-    public function __construct(Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->prepareMetadata();
-    }
-
     public function saveNBT(): void {
         parent::saveNBT();
         $this->saveALEntityNbt();
