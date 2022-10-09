@@ -2,10 +2,8 @@
 
 namespace Rushil13579\AdvancedLeaderboards\Tasks;
 
-use pocketmine\{
-    Server,
-    Player
-};
+use pocketmine\Server;
+use pocketmine\player\Player;
 
 use pocketmine\scheduler\Task;
 
@@ -13,14 +11,12 @@ use Rushil13579\AdvancedLeaderboards\Main;
 
 class MoneyUpdateTask extends Task {
 
-    private $main;
-
-    public function __construct(Main $main){
+    public function __construct(private Main $main) {
         $this->main = $main;
     }
 
-    public function onRun($tick){
-        foreach($this->main->getServer()->getOnlinePlayers() as $player){
+    public function onRun() : void {
+        foreach(Server::getInstance()->getOnlinePlayers() as $player) {
             $this->main->updateMoney($player);
         }
     }

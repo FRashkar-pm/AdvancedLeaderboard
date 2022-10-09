@@ -16,11 +16,8 @@ use Rushil13579\AdvancedLeaderboards\Main;
 
 class StatsCommand extends Command {
 
-    private $main;
-
-    public function __construct(Main $main){
+    public function __construct(private Main $main){
         $this->main = $main;
-
         parent::__construct('stats', 'Shows your server statistics');
     }
 
