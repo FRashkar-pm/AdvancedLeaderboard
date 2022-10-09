@@ -17,7 +17,7 @@ class XpUpdateTask extends Task {
     }
 
     public function onRun() : void {
-        foreach(Sever::getInstance()->getOnlinePlayers() as $player) {
+        foreach(Server::getInstance()->getOnlinePlayers() as $player) {
             $this->main->updateXp($player);
         }
     }
