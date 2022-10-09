@@ -5,6 +5,7 @@ namespace Rushil13579\AdvancedLeaderboards\Commands;
 use pocketmine\player\Player;
 
 use pocketmine\command\CommandSender;
+use pocketmine\command\Command;
 
 use Rushil13579\AdvancedLeaderboards\Main;
 
