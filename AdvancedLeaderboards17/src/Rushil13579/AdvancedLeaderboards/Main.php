@@ -396,7 +396,7 @@ class Main extends PluginBase {
 
     public function removeLeaderboards($leaderboard){
         if($leaderboard === 'all'){
-            foreach($this->getServer()->getLevels() as $level){
+            foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         $entity->flagForDespawn();
@@ -404,7 +404,7 @@ class Main extends PluginBase {
                 }
             }
         } else {
-            foreach($this->getServer()->getLevels() as $level){
+            foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         if($this->typeOfALEntity($entity) === $leaderboard){
