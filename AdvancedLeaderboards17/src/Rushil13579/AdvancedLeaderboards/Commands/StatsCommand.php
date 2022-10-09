@@ -2,15 +2,9 @@
 
 namespace Rushil13579\AdvancedLeaderboards\Commands;
 
-use pocketmine\{
-    Server,
-    Player
-};
+use pocketmine\player\Player;
 
-use pocketmine\command\{
-    Command,
-    CommandSender
-};
+use pocketmine\command\CommandSender;
 
 use Rushil13579\AdvancedLeaderboards\Main;
 
@@ -33,12 +27,12 @@ class StatsCommand extends Command {
             return false;
         }
 
-        if($this->main->getServer()->getPlayer($args[0]) === null or !$this->main->getServer()->getPlayer($args[0])->isOnline()){
+        if($this->main->getServer()->getPLayerByPrefix($args[0]) === null or !$this->main->getServer()->getPlayerByPrefix($args[0])->isOnline()){
             $sender->sendMessage($this->main->formatMessage($this->main->cfg->get('invalid-player-msg')));
             return false;
         }
 
-        $player = $this->main->getServer()->getPlayer($args[0]);
+        $player = $this->main->getServer()->getPlayerByPrefix($args[0]);
 
         $msg = $this->main->formatMessage($this->main->cfg->get('stats-msg'));
         $sender->sendMessage($this->main->generateStatsMsg($player, $msg));
