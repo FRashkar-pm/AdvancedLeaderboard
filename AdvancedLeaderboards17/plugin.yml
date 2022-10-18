@@ -1,7 +1,7 @@
 name: AdvancedLeaderboards
 main: Rushil13579\AdvancedLeaderboards\Main
 api: 4.0.0
-version: 1.0.1-beta
+version: 1.0.2-beta
 author: Rushil13579
 mcpe-protocol: [554]
 softdepend: [EconomyAPI,BedrockEconomy]
