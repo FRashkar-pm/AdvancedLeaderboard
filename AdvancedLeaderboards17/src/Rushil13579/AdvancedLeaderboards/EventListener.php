@@ -2,11 +2,7 @@
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\{
-    Server,
-    Player,
-
-};
+use pocketmine\player\Player;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\{
@@ -16,96 +12,89 @@ use pocketmine\event\player\{
     PlayerJumpEvent,
     PlayerItemConsumeEvent
 };
+
 use pocketmine\event\entity\{
     EntityDamageEvent,
     EntityDamageByEntityEvent
 };
+
 use pocketmine\event\block\{
     BlockBreakEvent,
     BlockPlaceEvent
 };
+
 use pocketmine\event\inventory\CraftItemEvent;
 
 use Rushil13579\AdvancedLeaderboards\Main;
 
 class EventListener implements Listener {
 
-    /** @var Main **/
-    private $main;
-
-    public function __construct(Main $main){
+    public function __construct(private Main $main) {
         $this->main = $main;
     }
 
-
-    // PLAYER EVENTS
-
-
-    public function onJoin(PlayerJoinEvent $ev){
+    public function onJoin(PlayerJoinEvent $ev) {
         $this->main->joinDataAdding($ev->getPlayer());
-
         $this->main->addJoin($ev->getPlayer());
     }
 
-    public function onChat(PlayerChatEvent $ev){
+    public function onChat(PlayerChatEvent $ev) {
         $player = $ev->getPlayer();
         $msg = $ev->getMessage();
 
-        if(!$ev->isCancelled()){
+        if(!$ev->isCancelled()) {
             $this->main->addMessage($player);
         }
 
-        if($msg !== 'confirm' and $msg !== 'cancel'){
+        if($msg !== 'confirm' and $msg !== 'cancel') {
             return null;
         }
 
-        if($msg === 'confirm'){
-            if(isset($this->main->lbmove[$player->getName()])){
-                if($this->main->lbmove[$player->getName()] !== 'pending'){
+        if($msg === 'confirm') {
+            if(isset($this->main->lbmove[$player->getName()])) {
+                if($this->main->lbmove[$player->getName()] !== 'pending') {
                     $entity = $this->main->lbmove[$player->getName()];
                     $entity->teleport($player);
                     $msg = $this->main->formatMessage($this->main->cfg->get('leaderboard-moved-msg'));
                     $player->sendMessage($this->main->generateLeaderboardMsg($entity, $msg));
                     unset($this->main->lbmove[$player->getName()]);
-                    $ev->setCancelled();
+                    $ev->cancel();
                 }
             }
         }
 
-        if($msg === 'cancel'){
-            if(isset($this->main->lbmove[$player->getName()])){
+        if($msg === 'cancel') {
+            if(isset($this->main->lbmove[$player->getName()])) {
                 unset($this->main->lbmove[$player->getName()]);
                 $player->sendMessage($this->main->formatMessage($this->main->cfg->get('leaderboard-move-cancelled-msg')));
-                $ev->setCancelled();
+                $ev->cancel();
             }
-            if(isset($this->main->lbremove[$player->getName()])){
+            if(isset($this->main->lbremove[$player->getName()])) {
                 unset($this->main->lbremove[$player->getName()]);
                 $player->sendMessage($this->main->formatMessage($this->main->cfg->get('leaderboard-remove-cancelled-msg')));
-                $ev->setCancelled();
+                $ev->cancel();
             }
         }
     }
 
-    public function onJump(PlayerJumpEvent $ev){
+    public function onJump(PlayerJumpEvent $ev) {
         $player = $ev->getPlayer();
-
         $this->main->addJump($player);
     }
 
-    public function onConsume(PlayerItemConsumeEvent $ev){
+    public function onConsume(PlayerItemConsumeEvent $ev) {
         $player = $ev->getPlayer();
-
-        if(!$ev->isCancelled()){
+        if(!$ev->isCancelled()) {
             $this->main->addConsume($player);
         }
     }
 
-    public function onDeath(PlayerDeathEvent $ev){
+    public function onDeath(PlayerDeathEvent $ev) {
         $player = $ev->getPlayer();
         $cause = $player->getLastDamageCause();
-        if($cause instanceof EntityDamageByEntityEvent){
+        if($cause instanceof EntityDamageByEntityEvent) {
             $damager = $cause->getDamager();
-            if($damager instanceof Player){
+            if($damager instanceof Player) {
                 $this->main->addDeath($player);
                 $this->main->addKill($damager);
                 $this->main->reviseKDR($player);
@@ -117,13 +106,9 @@ class EventListener implements Listener {
         }
     }
 
-
-    // ENTITY EVENTS
-
-
-    public function onDamage(EntityDamageEvent $ev){
+    public function onDamage(EntityDamageEvent $ev) {
         $entity = $ev->getEntity();
-        if($this->main->isALEntity($entity) === null){
+        if($this->main->isALEntity($entity) === null) {
             return null;
         }
 
@@ -147,7 +132,7 @@ class EventListener implements Listener {
             }
         }
         
-        $ev->setCancelled();
+        $ev->cancel();
     }
 
 

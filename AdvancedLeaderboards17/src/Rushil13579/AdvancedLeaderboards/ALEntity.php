@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\entity\{Skin,Human};
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;

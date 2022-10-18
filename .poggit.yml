@@ -5,4 +5,6 @@ branches:
 projects:
   AdvancedLeaderboards17:
     path: AdvancedLeaderboards17/
+    libs:
+      - src: https://poggit.pmmp.io/ci/Vecnavium/FormsUI/FormsUI
 ...

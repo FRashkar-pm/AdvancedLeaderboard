@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\{FloatTag,CompoundTag};
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;

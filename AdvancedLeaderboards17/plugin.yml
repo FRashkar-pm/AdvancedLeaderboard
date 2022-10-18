@@ -9,3 +9,4 @@ softdepend: [EconomyAPI,BedrockEconomy]
 permissions:
   advancedleaderboards.command.lb:
     description: Allows a player to access all leaderboard commands!
+    default: op

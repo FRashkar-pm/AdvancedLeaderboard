@@ -2,12 +2,9 @@
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\{
-    Server,
-    Player
-};
-
 use pocketmine\plugin\PluginBase;
+
+use pocketmine\player\Player;
 
 use pocketmine\entity\{
     Entity,
@@ -32,12 +29,13 @@ use Rushil13579\AdvancedLeaderboards\Tasks\{
     MoneyUpdateTask
 };
 
-use Rushil13579\AdvancedLeaderboards\libs\jojoe77777\FormAPI\SimpleForm;
+use Vecnavium\FormsUI\SimpleForm;
+
 use onebone\economyapi\EconomyAPI;
 
 class Main extends PluginBase {
 
-    public $cfg;
+    public Config $cfg;
 
     public $joins;
     public $kills;
@@ -56,10 +54,10 @@ class Main extends PluginBase {
 
     public $money;
 
-    public $lbremove = [];
-    public $lbmove = [];
+    public array $lbremove = [];
+    public array $lbmove = [];
 
-    public $otsession = [];
+    public array $otsession = [];
 
     const PREFIX = '§3[§bAdvancedLeaderboards§3]';
 
@@ -84,42 +82,32 @@ class Main extends PluginBase {
     // STARTUP FUNCTIONS
 
 
-    public function onEnable(){
+    public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-
         $this->saveDefaultConfig();
         $this->cfg = $this->getConfig();
-
-        $this->versionCheck();
-
-        $this->economyapiCheck();
-
+        $this->checks();
         $this->registerCommands();
-
         Entity::registerEntity(ALEntity::class, true);
-
         $this->generateFiles();
-
         $this->startTasks();
     }
 
-    public function onDisable(){
+    public function onDisable() : void {
         foreach($this->otsession as $player => $time){
             $this->ot->set($player, $this->ot->get($player) + $time);
             $this->ot->save();
         }
     }
 
-    public function versionCheck(){
-        if($this->cfg->get('version') !== '1.0.0'){
-            $this->getLogger()->warning('§cThe configuration file is outdated. Please delete the configuration file and restart your server to install the latest version');
+    public function checks() : void {
+        if ($this->cfg->getNested("version") !== "1.0.0") {
+            $this->getLogger()->warning("§cThe configuration file is outdated. Please delete the configuration file and restart your server to install the latest version");
             $this->getServer()->getPluginManager()->disablePlugin($this);
         }
-    }
 
-    public function economyapiCheck(){
-        if($this->cfg->get('topmoney-leaderboard-support') == 'true'){
-            if($this->getServer()->getPluginManager()->getPlugin('EconomyAPI') === null){
+        if ($this->cfg->getNested("topmoney-leaderboard-support", true)) {
+            if ($this->getServer()->getPluginmanager()->getPlugin("EconomyAPI") === null) {
                 $this->getLogger()->warning('§cEconomyAPI not found! Please install EconomyAPI or disable topmoney-leaderboard-support');
                 $this->getServer()->getPluginManager()->disablePlugin($this);
             }
@@ -164,11 +152,7 @@ class Main extends PluginBase {
         }
     }
 
-
-    // DATA MANAGER
-
-
-    public function joinDataAdding($player){
+    public function joinDataAdding(Player $player){
         if(!$this->joins->exists($player->getName())){
             $this->joins->set($player->getName(), 0);
             $this->joins->save();
@@ -412,7 +396,7 @@ class Main extends PluginBase {
 
     public function removeLeaderboards($leaderboard){
         if($leaderboard === 'all'){
-            foreach($this->getServer()->getLevels() as $level){
+            foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         $entity->flagForDespawn();
@@ -420,7 +404,7 @@ class Main extends PluginBase {
                 }
             }
         } else {
-            foreach($this->getServer()->getLevels() as $level){
+            foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         if($this->typeOfALEntity($entity) === $leaderboard){
@@ -571,55 +555,52 @@ class Main extends PluginBase {
         $entity->setNameTag($text);
     }
 
-
-    // FORMS
-
-
-    public function sendLeaderboardForm($player){
-        $form = new SimpleForm(function (Player $player, $data = null){
-            if($data === null){
-                return null;
+    public function sendLeaderboardForm(Player $player) {
+        $form = new SimpleForm(function (Player $player, int|null $data) {
+            if($data === null) {
+                return true;
             }
 
-            if($data === 'create'){
-                $this->sendCreateForm($player);
-            }
-            if($data === 'move'){
-                $this->lbmove[$player->getName()] = 'pending';
-                $player->sendMessage($this->formatMessage($this->cfg->get('leaderboard-move-select-msg')));
-            }
-            if($data === 'remove'){
-                $this->sendRemoveForm($player);
+            switch ($data) {
+                case 0:
+                    $this->sendCreateForm($player);
+                    break;
+                case 1:
+                    $this->lbmove[$player->getName()] = 'pending';
+                    $player->sendMessage($this->formatMessage($this->cfg->get('leaderboard-move-select-msg')));
+                    break;
+                case 2:
+                    $this->sendRemoveForm($player);
             }
         });
 
         $form->setTitle(self::PREFIX);
-        $form->addButton('§l§bCreate Leaderboard', '-1', '', 'create');
-        $form->addButton('§l§bMove Leaderboard', '-1', '', 'move');
-        $form->addButton('§l§bRemove Leaderboard', '-1', '', 'remove');
+        $form->addButton('§l§bCreate Leaderboard', '-1');
+        $form->addButton('§l§bMove Leaderboard', '-1');
+        $form->addButton('§l§bRemove Leaderboard', '-1');
         $form->sendToPlayer($player);
         return $form;
     }
 
-    public function sendCreateForm($player){
-        $form = new SimpleForm(function (Player $player, $data = null){
-            if($data === null){
+    public function sendCreateForm(Player $player) {
+        $form = new SimpleForm(function (Player $player, $data = null) {
+            if($data === null) {
                 return null;
             }
 
-            foreach(self::LEADERBOARDS as $leaderboard){
-                if($data === $leaderboard){
+            foreach(self::LEADERBOARDS as $leaderboard) {
+                if($data === $leaderboard) {
                     $this->spawnLeaderboard($player, $leaderboard);
                     $msg = $this->formatMessage($this->cfg->get('leaderboard-created-msg'));
                     $player->sendMessage(str_replace('{leaderboard_type}', $leaderboard, $msg));
                 } else {
-                    if($data === 'Top Money'){
+                    if($data === 'Top Money') {
                         $this->spawnLeaderboard($player, $data);
                         $msg = $this->formatMessage($this->cfg->get('leaderboard-created-msg'));
                         $player->sendMessage(str_replace('{leaderboard_type}', $data, $msg));
                         break;
                     } else {
-                        if($data === 'back'){
+                        if($data === 'back') {
                             $this->sendLeaderboardForm($player);
                             break;
                         }
@@ -628,10 +609,10 @@ class Main extends PluginBase {
             }
         });
         $form->setTitle(self::PREFIX);
-        foreach(self::LEADERBOARDS as $leaderboard){
+        foreach(self::LEADERBOARDS as $leaderboard) {
             $form->addButton('§l§b' . $leaderboard, '-1', '', $leaderboard);
         }
-        if($this->cfg->get('topmoney-leaderboard-support') == 'true'){
+        if($this->cfg->get('topmoney-leaderboard-support') == 'true') {
             $form->addButton('§l§bTop Money', '-1', '', 'Top Money');
         }
         $form->addButton('§l§cBack', '-1', '', 'back');
@@ -639,22 +620,22 @@ class Main extends PluginBase {
         return $form;
     }
 
-    public function sendRemoveForm($player){
-        $form = new SimpleForm(function (Player $player, $data = null){
-            if($data === null){
+    public function sendRemoveForm(Player $player) {
+        $form = new SimpleForm(function (Player $player, $data = null) {
+            if($data === null) {
                 return null;
             }
 
-            if($data === 'one'){
+            if($data === 'one') {
                 $this->lbremove[$player->getName()] = 'pending';
                 $player->sendMessage($this->formatMessage($this->cfg->get('leaderboard-remove-select-msg')));
             }
 
-            if($data === 'multi'){
+            if($data === 'multi') {
                 $this->sendMultiRemoveForm($player);
             }
 
-            if($data === 'back'){
+            if($data === 'back') {
                 $this->sendLeaderboardForm($player);
             }
         });
@@ -666,30 +647,30 @@ class Main extends PluginBase {
         return $form;
     }
 
-    public function sendMultiRemoveForm($player){
-        $form = new SimpleForm(function (Player $player, $data = null){
-            if($data === null){
+    public function sendMultiRemoveForm(Player $player) {
+        $form = new SimpleForm(function (Player $player, $data = null) {
+            if($data === null) {
                 return null;
             }
 
-            foreach(self::LEADERBOARDS as $leaderboard){
-                if($data === $leaderboard){
+            foreach(self::LEADERBOARDS as $leaderboard) {
+                if($data === $leaderboard) {
                     $this->removeLeaderboards($leaderboard);
                     $msg = $this->formatMessage($this->cfg->get('leaderboard-type-removed-msg'));
                     $player->sendMessage(str_replace('{leaderboard_type}', $leaderboard, $msg));
                 } else {
-                    if($data === 'Top Money'){
+                    if($data === 'Top Money') {
                         $this->removeLeaderboards($data);
                         $msg = $this->formatMessage($this->cfg->get('leaderboard-type-removed-msg'));
                         $player->sendMessage(str_replace('{leaderboard_type}', $data, $msg));
                         break;
                     } else {
-                        if($data === 'all'){
+                        if($data === 'all') {
                             $this->removeLeaderboards($data);
                             $player->sendMessage($this->formatMessage($this->cfg->get('leaderboard-all-removed-msg')));
                             break;
                         } else {
-                            if($data === 'back'){
+                            if($data === 'back') {
                                 $this->sendRemoveForm($player);
                                 break;
                             }
@@ -700,10 +681,10 @@ class Main extends PluginBase {
 
         });
         $form->setTitle(self::PREFIX);
-        foreach(self::LEADERBOARDS as $leaderboard){
+        foreach(self::LEADERBOARDS as $leaderboard) {
             $form->addButton('§l§bRemove ' . $leaderboard, '-1', '', $leaderboard);
         }
-        if($this->cfg->get('topmoney-leaderboard-support') == 'true'){
+        if($this->cfg->get('topmoney-leaderboard-support') == 'true') {
             $form->addButton('§l§bRemove Top Money', '-1', '', 'Top Money');
         }
         $form->addButton('§l§cRemove All', '-1', '', 'all');
