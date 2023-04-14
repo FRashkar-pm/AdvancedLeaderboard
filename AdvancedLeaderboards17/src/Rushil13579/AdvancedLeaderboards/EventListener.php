@@ -2,12 +2,8 @@
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\{
-    Server,
-    Player,
-
-};
-
+use pocketmine\Server;
+use pocketmine\player\Player;
 use pocketmine\event\Listener;
 use pocketmine\event\player\{
     PlayerJoinEvent,
@@ -31,7 +27,7 @@ use Rushil13579\AdvancedLeaderboards\Main;
 class EventListener implements Listener {
 
     /** @var Main **/
-    private $main;
+    private Main $main;
 
     public function __construct(Main $main){
         $this->main = $main;
