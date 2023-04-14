@@ -15,7 +15,6 @@ use Rushil13579\AdvancedLeaderboards\Tasks\{LeaderboardUpdateTask, OnlineTimeUpd
 use Rushil13579\AdvancedLeaderboards\libs\jojoe77777\FormAPI\SimpleForm;
 use onebone\economyapi\EconomyAPI;
 
-use pocketmine\data\bedrock\EntityLegacyIds;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
