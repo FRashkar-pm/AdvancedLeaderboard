@@ -16,7 +16,7 @@ class MoneyUpdateTask extends Task {
         $this->main = $main;
     }
 
-    public function onRun($tick): void{
+    public function onRun(): void{
         foreach($this->main->getServer()->getOnlinePlayers() as $player){
             $this->main->updateMoney($player);
         }
