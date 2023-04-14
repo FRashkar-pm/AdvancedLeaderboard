@@ -2,38 +2,25 @@
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\{
-    Server,
-    Player
-};
-
+use pocketmine\Server;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-
-use pocketmine\entity\{
-    Entity,
-    Skin
-};
-
+use pocketmine\entity\Skin;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\CompoundTag;
-
 use pocketmine\utils\Config;
 use pocketmine\math\Vector3;
-
-use Rushil13579\AdvancedLeaderboards\Commands\{
-    LeaderboardCommand,
-    StatsCommand
-};
-
-use Rushil13579\AdvancedLeaderboards\Tasks\{
-    LeaderboardUpdateTask,
-    OnlineTimeUpdateTask,
-    XpUpdateTask,
-    MoneyUpdateTask
-};
-
+use Rushil13579\AdvancedLeaderboards\Commands\{LeaderboardCommand, StatsCommand};
+use Rushil13579\AdvancedLeaderboards\Tasks\{LeaderboardUpdateTask, OnlineTimeUpdateTask, XpUpdateTask, MoneyUpdateTask};
 use Rushil13579\AdvancedLeaderboards\libs\jojoe77777\FormAPI\SimpleForm;
 use onebone\economyapi\EconomyAPI;
+
+use pocketmine\data\bedrock\EntityLegacyIds;
+use pocketmine\entity\Entity;
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\EntityFactory;
+use pocketmine\world\World;
+use Rushil13579\AdvancedLeaderboards\ALEntity;
 
 class Main extends PluginBase {
 
@@ -84,7 +71,7 @@ class Main extends PluginBase {
     // STARTUP FUNCTIONS
 
 
-    public function onEnable(){
+    public function onEnable(): void{
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 
         $this->saveDefaultConfig();
@@ -96,14 +83,16 @@ class Main extends PluginBase {
 
         $this->registerCommands();
 
-        Entity::registerEntity(ALEntity::class, true);
+        EntityFactory::getInstance()->register(ALEntity::class, function(World $world, CompoundTag $nbt) : ALEntity{
+			return new ALEntity(Helper::parseLocation($nbt, $world), ALEntity::parseSkinNBT($nbt), $nbt);
+		}, ['ALEntity']);
 
         $this->generateFiles();
 
         $this->startTasks();
     }
 
-    public function onDisable(){
+    public function onDisable(): void{
         foreach($this->otsession as $player => $time){
             $this->ot->set($player, $this->ot->get($player) + $time);
             $this->ot->save();
@@ -133,24 +122,24 @@ class Main extends PluginBase {
     }
 
     public function generateFiles(){
-        @mkdir($this->getDataFolder() . 'playerdata/');
-        $this->joins = new Config($this->getDataFolder() . 'playerdata/' . 'joins.yml', Config::YAML);
-        $this->kills = new Config($this->getDataFolder() . 'playerdata/' . 'kills.yml', Config::YAML);
-        $this->deaths = new Config($this->getDataFolder() . 'playerdata/' . 'deaths.yml', Config::YAML);
-        $this->kdr = new Config($this->getDataFolder() . 'playerdata/' . 'kdr.yml', Config::YAML);
-        $this->ks = new Config($this->getDataFolder() . 'playerdata/' . 'killstreak.yml', Config::YAML);
-        $this->hks = new Config($this->getDataFolder() . 'playerdata/' . 'highestkillstreak.yml', Config::YAML);
-        $this->bp = new Config($this->getDataFolder() . 'playerdata/' . 'blocksplaced.yml', Config::YAML);
-        $this->bb = new Config($this->getDataFolder() . 'playerdata/' . 'blocksbroken.yml', Config::YAML);
-        $this->jumps = new Config($this->getDataFolder() . 'playerdata/' . 'jumps.yml', Config::YAML);
-        $this->messengers = new Config($this->getDataFolder() . 'playerdata/' . 'messengers.yml', Config::YAML);
-        $this->crafts = new Config($this->getDataFolder() . 'playerdata/' . 'crafts.yml', Config::YAML);
-        $this->ic = new Config($this->getDataFolder() . 'playerdata/' . 'itemsconsumed.yml', Config::YAML);
-        $this->xp = new Config($this->getDataFolder() . 'playerdata/' . 'xp.yml', Config::YAML);
-        $this->ot = new Config($this->getDataFolder() . 'playerdata/' . 'onlinetime.yml', Config::YAML);
+        @mkdir($this->getDataFolder() . '/playerdata');
+        $this->joins = new Config($this->getDataFolder() . '/playerdata' . '/joins.yml', Config::YAML);
+        $this->kills = new Config($this->getDataFolder() . '/playerdata' . '/kills.yml', Config::YAML);
+        $this->deaths = new Config($this->getDataFolder() . '/playerdata' . '/deaths.yml', Config::YAML);
+        $this->kdr = new Config($this->getDataFolder() . '/playerdata' . '/kdr.yml', Config::YAML);
+        $this->ks = new Config($this->getDataFolder() . '/playerdata' . '/killstreak.yml', Config::YAML);
+        $this->hks = new Config($this->getDataFolder() . '/playerdata' . '/highestkillstreak.yml', Config::YAML);
+        $this->bp = new Config($this->getDataFolder() . '/playerdata' . '/blocksplaced.yml', Config::YAML);
+        $this->bb = new Config($this->getDataFolder() . '/playerdata' . '/blocksbroken.yml', Config::YAML);
+        $this->jumps = new Config($this->getDataFolder() . '/playerdata' . '/jumps.yml', Config::YAML);
+        $this->messengers = new Config($this->getDataFolder() . '/playerdata' . '/messengers.yml', Config::YAML);
+        $this->crafts = new Config($this->getDataFolder() . '/playerdata' . '/crafts.yml', Config::YAML);
+        $this->ic = new Config($this->getDataFolder() . '/playerdata' . '/itemsconsumed.yml', Config::YAML);
+        $this->xp = new Config($this->getDataFolder() . '/playerdata' . '/xp.yml', Config::YAML);
+        $this->ot = new Config($this->getDataFolder() . '/playerdata' .'/onlinetime.yml', Config::YAML);
 
         if($this->cfg->get('topmoney-leaderboard-support') == 'true'){
-            $this->money = new Config($this->getDataFolder() . 'playerdata/' . 'money.yml', Config::YAML);
+            $this->money = new Config($this->getDataFolder() . '/playerdata' . '/money.yml', Config::YAML);
         }
     }
 
@@ -168,7 +157,7 @@ class Main extends PluginBase {
     // DATA MANAGER
 
 
-    public function joinDataAdding($player){
+    public function joinDataAdding(Player $player){
         if(!$this->joins->exists($player->getName())){
             $this->joins->set($player->getName(), 0);
             $this->joins->save();
@@ -247,22 +236,22 @@ class Main extends PluginBase {
         }
     }
 
-    public function addJoin($player){
+    public function addJoin(Player $player){
         $this->joins->set($player->getName(), $this->joins->get($player->getName()) + 1);
         $this->joins->save();
     }
 
-    public function addDeath($player){
+    public function addDeath(Player $player){
         $this->deaths->set($player->getName(), $this->deaths->get($player->getName()) + 1);
         $this->deaths->save();
     }
 
-    public function addKill($player){
+    public function addKill(Player $player){
         $this->kills->set($player->getName(), $this->kills->get($player->getName()) + 1);
         $this->kills->save();
     }
 
-    public function reviseKDR($player){
+    public function reviseKDR(Player $player){
         $kills = $this->kills->get($player->getName());
         $deaths = $this->deaths->get($player->getName());
 
@@ -276,57 +265,57 @@ class Main extends PluginBase {
         $this->kdr->save();
     }
 
-    public function resetKS($player){
+    public function resetKS(Player $player){
         $this->ks->set($player->getName(), 0);
         $this->ks->save();
     }
 
-    public function addKS($player){
+    public function addKS(Player $player){
         $this->ks->set($player->getName(), $this->ks->get($player->getName()) + 1);
         $this->ks->save();
     }
 
-    public function addHKS($player){
+    public function addHKS(Player $player){
         $this->hks->set($player->getName(), $this->hks->get($player->getName()) + 1);
         $this->hks->save();
     }
 
-    public function addBlockPlace($player){
+    public function addBlockPlace(Player $player){
         $this->bp->set($player->getName(), $this->bp->get($player->getName()) + 1);
         $this->bp->save();
     }
 
-    public function addBlockBreak($player){
+    public function addBlockBreak(Player $player){
         $this->bb->set($player->getName(), $this->bb->get($player->getName()) + 1);
         $this->bb->save();
     }
 
-    public function addJump($player){
+    public function addJump(Player $player){
         $this->jumps->set($player->getName(), $this->jumps->get($player->getName()) + 1);
         $this->jumps->save();
     }
 
-    public function addMessage($player){
+    public function addMessage(Player $player){
         $this->messengers->set($player->getName(), $this->messengers->get($player->getName()) + 1);
         $this->messengers->save();
     }
 
-    public function addCraft($player){
+    public function addCraft(Player $player){
         $this->crafts->set($player->getName(), $this->crafts->get($player->getName()) + 1);
         $this->crafts->save();
     }
 
-    public function addConsume($player){
+    public function addConsume(Player $player){
         $this->ic->set($player->getName(), $this->ic->get($player->getName()) + 1);
         $this->ic->save();
     }
 
-    public function updateXp($player){
+    public function updateXp(Player $player){
         $this->xp->set($player->getName(), $player->getXpLevel());
         $this->xp->save();
     }
 
-    public function updateOnlineTime($player){
+    public function updateOnlineTime(Player $player){
         if(!isset($this->otsession[$player->getName()])){
             $this->otsession[$player->getName()] = 0;
             return null;
@@ -335,7 +324,7 @@ class Main extends PluginBase {
         $this->otsession[$player->getName()] = $this->otsession[$player->getName()] + 1;
     }
 
-    public function updateMoney($player){
+    public function updateMoney(Player $player){
         $this->money->set($player->getName(), EconomyAPI::getInstance()->myMoney($player));
         $this->money->save();
     }
@@ -349,7 +338,7 @@ class Main extends PluginBase {
         return (string) $msg;
     }
 
-    public function generateStatsMsg($player, string $msg){
+    public function generateStatsMsg(Player $player, string $msg){
         $joins = $this->joins->get($player->getName());
         $kills = $this->kills->get($player->getName());
         $deaths = $this->deaths->get($player->getName());
@@ -379,7 +368,7 @@ class Main extends PluginBase {
         return (string) $fm;
     }
 
-    public function generateLeaderboardMsg($entity, string $msg){
+    public function generateLeaderboardMsg(Entity $entity, string $msg){
         $type = $this->typeOfALEntity($entity);
         $msg = str_replace('{leaderboard_type}', $type, $msg);
         return (string) $msg;
@@ -389,7 +378,7 @@ class Main extends PluginBase {
     // LEADERBOARD ENTITY MANAGER
 
 
-    public function spawnLeaderboard($player, $leaderboard){
+    public function spawnLeaderboard(Player $player, $leaderboard){
         $nbt = $this->generateNBT($player, $leaderboard);
         $entity = new ALEntity($player->getLevel(), $nbt);
         $entity->setMaxHealth(1);
@@ -398,7 +387,7 @@ class Main extends PluginBase {
         $this->updateLeaderboard($entity, $leaderboard);
     }
 
-    public function generateNBT($player, $leaderboard){
+    public function generateNBT(Player $player, $leaderboard){
         $nbt = Entity::createBaseNBT(new Vector3($player->getX(), $player->getY() + 0.5, $player->getZ()));
         $nbt->setString('Type', $leaderboard);
         $skin = new Skin("Standard_Custom", str_repeat("\x00", 8192));
@@ -432,14 +421,14 @@ class Main extends PluginBase {
         }
     }
 
-    public function isALEntity($entity){
+    public function isALEntity(ALEntity $entity){
         if($entity instanceof ALEntity){
             return ' ';
         }
         return null;
     }
 
-    public function typeOfALEntity($entity){
+    public function typeOfALEntity(ALEntity $entity){
         $type = $entity->namedtag->getString('Type');
         return (string) $type;
     }
@@ -448,7 +437,7 @@ class Main extends PluginBase {
     // LEADERBOARD MANAGER
 
 
-    public function updateLeaderboard($entity, $type){
+    public function updateLeaderboard(ALEntity $entity, $type){
         $joins = $this->joins->getAll();
         arsort($joins);
         $joins = array_slice($joins, 0, $this->cfg->get('leaderboard-length'));
@@ -575,7 +564,7 @@ class Main extends PluginBase {
     // FORMS
 
 
-    public function sendLeaderboardForm($player){
+    public function sendLeaderboardForm(Player $player){
         $form = new SimpleForm(function (Player $player, $data = null){
             if($data === null){
                 return null;
@@ -601,7 +590,7 @@ class Main extends PluginBase {
         return $form;
     }
 
-    public function sendCreateForm($player){
+    public function sendCreateForm(Player $player){
         $form = new SimpleForm(function (Player $player, $data = null){
             if($data === null){
                 return null;
@@ -639,7 +628,7 @@ class Main extends PluginBase {
         return $form;
     }
 
-    public function sendRemoveForm($player){
+    public function sendRemoveForm(Player $player){
         $form = new SimpleForm(function (Player $player, $data = null){
             if($data === null){
                 return null;
@@ -666,7 +655,7 @@ class Main extends PluginBase {
         return $form;
     }
 
-    public function sendMultiRemoveForm($player){
+    public function sendMultiRemoveForm(Player $player){
         $form = new SimpleForm(function (Player $player, $data = null){
             if($data === null){
                 return null;
