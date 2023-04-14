@@ -2,21 +2,15 @@
 
 namespace Rushil13579\AdvancedLeaderboards\Commands;
 
-use pocketmine\{
-    Server,
-    Player
-};
-
-use pocketmine\command\{
-    Command,
-    CommandSender
-};
-
+use pocketmine\Server;
+use pocketmine\player\Player;
+use pocketmine\command\{Command, CommandSender};
+use pocketmine\plugin\PluginOwned;
 use Rushil13579\AdvancedLeaderboards\Main;
 
 class StatsCommand extends Command {
 
-    private $main;
+    private Main $main;
 
     public function __construct(Main $main){
         $this->main = $main;
@@ -45,5 +39,9 @@ class StatsCommand extends Command {
 
         $msg = $this->main->formatMessage($this->main->cfg->get('stats-msg'));
         $sender->sendMessage($this->main->generateStatsMsg($player, $msg));
+    }
+    
+    public function getOwningPlugin(): Main {
+        return $this->main;
     }
 }
