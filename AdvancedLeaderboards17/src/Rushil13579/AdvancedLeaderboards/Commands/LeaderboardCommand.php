@@ -2,21 +2,15 @@
 
 namespace Rushil13579\AdvancedLeaderboards\Commands;
 
-use pocketmine\{
-    Server,
-    Player
-};
-
-use pocketmine\command\{
-    Command,
-    CommandSender
-};
-
+use pocketmine\Server;
+use pocketmine\player\Player;
+use pocketmine\command\{Command, CommandSender};
+use pocketmine\plugin\PluginOwned;
 use Rushil13579\AdvancedLeaderboards\Main;
 
 class LeaderboardCommand extends Command {
 
-    private $main;
+    private Main $main;
 
     public function __construct(Main $main){
         $this->main = $main;
@@ -37,5 +31,9 @@ class LeaderboardCommand extends Command {
         }
 
         $this->main->sendLeaderboardForm($sender);
+    }
+    
+    public function getOwningPlugin(): Main{
+        return $this->main;
     }
 }
