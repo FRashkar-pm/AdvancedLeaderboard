@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Rushil13579\AdvancedLeaderboards;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\{FloatTag,CompoundTag};
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 
 /**
@@ -32,11 +34,11 @@ trait ALEntityTrait {
     abstract public function setGenericFlag(int $flag, bool $value = true): void;
 
     public function prepareMetadata(): void {
-        $this->setGenericFlag(Entity::DATA_FLAG_IMMOBILE, true);
+        $this->setGenericFlag(EntityMetadataFlags::IMMOBILE, true);
         if (!$this->namedtag->hasTag("Scale", FloatTag::class)) {
             $this->namedtag->setFloat("Scale", 1.0, true);
         }
-        $this->getNetworkProperties()->setFloat(Entity::DATA_SCALE, $this->namedtag->getFloat("Scale"));
+        $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, $this->namedtag->getFloat("Scale"));
     }
 
     public function tryChangeMovement(): void {
