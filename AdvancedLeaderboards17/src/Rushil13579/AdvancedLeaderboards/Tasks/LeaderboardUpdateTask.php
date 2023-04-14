@@ -16,7 +16,7 @@ class LeaderboardUpdateTask extends Task {
         $this->main = $main;
     }
 
-    public function onRun($tick): void{
+    public function onRun(): void{
         foreach($this->main->getServer()->getWorldManager()->getWorlds() as $level){
             foreach($level->getEntities() as $entity){
                 if($this->main->isALEntity($entity) !== null){
