@@ -9,6 +9,7 @@ use pocketmine\entity\{Skin,Human};
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use Rushil13579\AdvancedLeaderboards\Main;
+use Rushil13579\AdvancedLeaderboards\ALEntityTrait;
 
 class ALEntity extends Human {
 
@@ -17,14 +18,14 @@ class ALEntity extends Human {
     public $height = 0.0;
     public $width = 0.0;
 
-    public function saveNBT(): void {
+    public function saveNBT(): CompoundTag {
         parent::saveNBT();
         $this->saveALEntityNbt();
     }
 
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
-        $pk->entityRuntimeId = $this->getId();
+        $pk->actorRuntimeId = $this->getId();
         $pk->metadata = [self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $this->getDisplayName($player)]];
         $player->dataPacket($pk);
     }
