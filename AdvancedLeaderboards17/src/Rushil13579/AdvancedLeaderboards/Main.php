@@ -21,6 +21,7 @@ use pocketmine\entity\EntityFactory;
 use pocketmine\entity\ExperienceManager;
 use pocketmine\entity\Human;
 use pocketmine\world\World;
+use pocketmine\scheduler\TaskScheduler;
 use Rushil13579\AdvancedLeaderboards\ALEntity;
 
 class Main extends PluginBase {
