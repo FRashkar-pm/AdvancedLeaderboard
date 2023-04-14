@@ -19,8 +19,9 @@ class ALEntity extends Human {
     public $width = 0.0;
 
     public function saveNBT(): CompoundTag {
-        parent::saveNBT();
-        $this->saveALEntityNbt();
+        $nbt = parent::saveNBT();
+        $nbt->saveALEntityNbt();
+        return $nbt;
     }
 
     public function sendNameTag(Player $player): void {
