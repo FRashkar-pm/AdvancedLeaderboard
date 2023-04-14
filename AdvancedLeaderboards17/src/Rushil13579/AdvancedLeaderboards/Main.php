@@ -18,6 +18,8 @@ use onebone\economyapi\EconomyAPI;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
+use pocketmine\entity\ExperienceManager;
+use pocketmine\entity\Human;
 use pocketmine\world\World;
 use Rushil13579\AdvancedLeaderboards\ALEntity;
 
@@ -83,7 +85,7 @@ class Main extends PluginBase {
         $this->registerCommands();
 
         EntityFactory::getInstance()->register(ALEntity::class, function(World $world, CompoundTag $nbt) : ALEntity{
-			return new ALEntity(Helper::parseLocation($nbt, $world), ALEntity::parseSkinNBT($nbt), $nbt);
+			return new ALEntity(EntityDataHelper::parseLocation($nbt, $world), ALEntity::parseSkinNBT($nbt), $nbt);
 		}, ['ALEntity']);
 
         $this->generateFiles();
@@ -310,7 +312,7 @@ class Main extends PluginBase {
     }
 
     public function updateXp(Player $player){
-        $this->xp->set($player->getName(), $player->getXpLevel());
+        $this->xp->set($player->getName(), $player->getXpManager()->getXpLevel());
         $this->xp->save();
     }
 
@@ -379,7 +381,7 @@ class Main extends PluginBase {
 
     public function spawnLeaderboard(Player $player, $leaderboard){
         $nbt = $this->generateNBT($player, $leaderboard);
-        $entity = new ALEntity($player->getLevel(), $nbt);
+        $entity = new ALEntity($player->getWorld(), $nbt);
         $entity->setMaxHealth(1);
         $entity->setImmobile();
         $entity->spawnToAll();
@@ -387,7 +389,7 @@ class Main extends PluginBase {
     }
 
     public function generateNBT(Player $player, $leaderboard){
-        $nbt = Entity::createBaseNBT(new Vector3($player->getX(), $player->getY() + 0.5, $player->getZ()));
+        $nbt = Entity::createBaseNBT(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 0.5, $player->getPosition()->getZ()));
         $nbt->setString('Type', $leaderboard);
         $skin = new Skin("Standard_Custom", str_repeat("\x00", 8192));
         $nbt->setTag(new CompoundTag("Skin", [
@@ -400,7 +402,7 @@ class Main extends PluginBase {
 
     public function removeLeaderboards($leaderboard){
         if($leaderboard === 'all'){
-            foreach($this->getServer()->getLevels() as $level){
+            foreach($this->getServer()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         $entity->flagForDespawn();
@@ -408,7 +410,7 @@ class Main extends PluginBase {
                 }
             }
         } else {
-            foreach($this->getServer()->getLevels() as $level){
+            foreach($this->getServer()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         if($this->typeOfALEntity($entity) === $leaderboard){
