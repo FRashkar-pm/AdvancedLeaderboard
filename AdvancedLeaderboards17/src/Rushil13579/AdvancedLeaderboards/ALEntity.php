@@ -33,15 +33,15 @@ class ALEntity extends Human {
             }
         }
         $scale = $this->getNetworkProperties()->setGenericFlag(EntityMetadataProperties::SCALE, true);
-        $nbt->setInt("NameVisibility", $visibility, true);
-        $nbt->setFloat("Scale", $scale, true);
+        $nbt->setInt("NameVisibility", $visibility);
+        $nbt->setFloat("Scale", $scale);
         return $nbt;
     }
 
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [EntityMetadataProperties::NAMETAG => [EntityMetadataTypes::STRING , $this->getDisplayName($player)]];
+        $pk->metadata = [$player->getDisplayName()];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
