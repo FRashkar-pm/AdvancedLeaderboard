@@ -63,7 +63,7 @@ class EventListener implements Listener {
                     $msg = $this->main->formatMessage($this->main->cfg->get('leaderboard-moved-msg'));
                     $player->sendMessage($this->main->generateLeaderboardMsg($entity, $msg));
                     unset($this->main->lbmove[$player->getName()]);
-                    $ev->setCancelled();
+                    $ev->cancel();
                 }
             }
         }
@@ -72,12 +72,12 @@ class EventListener implements Listener {
             if(isset($this->main->lbmove[$player->getName()])){
                 unset($this->main->lbmove[$player->getName()]);
                 $player->sendMessage($this->main->formatMessage($this->main->cfg->get('leaderboard-move-cancelled-msg')));
-                $ev->setCancelled();
+                $ev->cancel();
             }
             if(isset($this->main->lbremove[$player->getName()])){
                 unset($this->main->lbremove[$player->getName()]);
                 $player->sendMessage($this->main->formatMessage($this->main->cfg->get('leaderboard-remove-cancelled-msg')));
-                $ev->setCancelled();
+                $ev->cancel();
             }
         }
     }
@@ -143,7 +143,7 @@ class EventListener implements Listener {
             }
         }
         
-        $ev->setCancelled();
+        $ev->cancel();
     }
 
 
