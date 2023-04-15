@@ -17,7 +17,7 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
  */
 trait ALEntityTrait {
     /** @var CompoundTag */
-    public $namedtag;
+    public CompoundTag $namedtag;
 
     /**
      * @return DataPropertyManager
@@ -35,7 +35,7 @@ trait ALEntityTrait {
 
     public function prepareMetadata(): void {
         $this->setGenericFlag(EntityMetadataFlags::IMMOBILE, true);
-        if (!$this->namedtag->hasTag("Scale", FloatTag::class)) {
+        if (!$this->namedtag->getTag("Scale") instanceof FloatTag) {
             $this->namedtag->setFloat("Scale", 1.0, true);
         }
         $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, $this->namedtag->getFloat("Scale"));
@@ -56,13 +56,13 @@ trait ALEntityTrait {
             $pk = new SetActorDataPacket();
             $pk->actorRuntimeId = $this->getId();
             $pk->metadata = $playerData;
-            $p->dataPacket($pk);
+            $p->getNetworkSession()->sendDataPacket($pk);
 
             $this->sendNameTag($p);
         }
     }
 
-    public function saveALEntityNbt(): void {
+    /*public function saveALEntityNbt(): void {
         $visibility = 0;
         if ($this->isNameTagVisible()) {
             $visibility = 1;
@@ -73,7 +73,7 @@ trait ALEntityTrait {
         $scale = $this->getNetworkProperties()->getFloat(EntityMetadataProperties::SCALE);
         $this->namedtag->setInt("NameVisibility", $visibility, true);
         $this->namedtag->setFloat("Scale", $scale, true);
-    }
+    }*/
 
     public function getDisplayName(Player $player): string {
         $vars = [
