@@ -30,12 +30,12 @@ class StatsCommand extends Command {
             return false;
         }
 
-        if($this->main->getServer()->getPlayer($args[0]) === null or !$this->main->getServer()->getPlayer($args[0])->isOnline()){
+        if($this->main->getServer()->getOnlinePlayers($args[0]) === null or !$this->main->getServer()->getOnlinePlayers($args[0])->isOnline()){
             $sender->sendMessage($this->main->formatMessage($this->main->cfg->get('invalid-player-msg')));
             return false;
         }
 
-        $player = $this->main->getServer()->getPlayer($args[0]);
+        $player = $this->main->getServer()->getOnlinePlayers($args[0]);
 
         $msg = $this->main->formatMessage($this->main->cfg->get('stats-msg'));
         $sender->sendMessage($this->main->generateStatsMsg($player, $msg));
