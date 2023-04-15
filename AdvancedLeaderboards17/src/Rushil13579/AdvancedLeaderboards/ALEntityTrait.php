@@ -22,16 +22,16 @@ trait ALEntityTrait {
     /**
      * @return DataPropertyManager
      */
-    public function getNetworkProperties(): DataPropertyManager;
+    abstract public function getNetworkProperties(): EntityMetadataCollection;
 
     /**
      * @return string
      */
-    public function getNameTag(): string;
+    abstract public function getNameTag(): string;
 
-    public function sendNameTag(Player $player): void;
+    abstract public function sendNameTag(Player $player): void;
 
-    public function setGenericFlag(int $flag, bool $value = true): void;
+    abstract public function setGenericFlag(int $flag, bool $value = true): void;
 
     public function prepareMetadata(): void {
         $this->setGenericFlag(EntityMetadataFlags::IMMOBILE, true);
@@ -41,9 +41,9 @@ trait ALEntityTrait {
         $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, $this->namedtag->getFloat("Scale"));
     }
 
-    public function tryChangeMovement(): void {
+    /*public function tryChangeMovement(): void {
 
-    }
+    }*/
 
     public function sendData($playerList, array $data = null): void {
         if(!is_array($playerList)){
