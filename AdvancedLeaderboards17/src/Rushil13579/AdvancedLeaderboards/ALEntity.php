@@ -20,15 +20,14 @@ class ALEntity extends Human {
 
     public function saveNBT(): CompoundTag {
         $nbt = parent::saveNBT();
-        $nbt->saveALEntityNbt();
         return $nbt;
     }
 
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $this->getDisplayName($player)]];
-        $player->dataPacket($pk);
+        $pk->metadata = [self::NAMETAG => [self::STRING , $this->getDisplayName($player)]];
+        $player->getNetworkSession()->sendDataPacket($pk);
     }
 
     protected function sendSpawnPacket(Player $player): void {
