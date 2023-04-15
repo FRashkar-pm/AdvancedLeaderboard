@@ -52,7 +52,7 @@ trait ALEntityTrait {
 
         foreach($playerList as $p){
             $playerData = $data ?? $this->getNetworkProperties()->getAll();
-            unset($playerData[self::NAMETAG]);
+            unset($playerData[EntityMetadataProperties::NAMETAG]);
             $pk = new SetActorDataPacket();
             $pk->actorRuntimeId = $this->getId();
             $pk->metadata = $playerData;
