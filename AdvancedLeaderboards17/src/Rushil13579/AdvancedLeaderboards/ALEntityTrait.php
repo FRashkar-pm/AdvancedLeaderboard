@@ -22,16 +22,16 @@ trait ALEntityTrait {
     /**
      * @return DataPropertyManager
      */
-    abstract public function getNetworkProperties(): DataPropertyManager;
+    public function getNetworkProperties(): DataPropertyManager;
 
     /**
      * @return string
      */
-    abstract public function getNameTag(): string;
+    public function getNameTag(): string;
 
-    abstract public function sendNameTag(Player $player): void;
+    public function sendNameTag(Player $player): void;
 
-    abstract public function setGenericFlag(int $flag, bool $value = true): void;
+    public function setGenericFlag(int $flag, bool $value = true): void;
 
     public function prepareMetadata(): void {
         $this->setGenericFlag(EntityMetadataFlags::IMMOBILE, true);
@@ -52,9 +52,9 @@ trait ALEntityTrait {
 
         foreach($playerList as $p){
             $playerData = $data ?? $this->getNetworkProperties()->getAll();
-            unset($playerData[self::DATA_NAMETAG]);
+            unset($playerData[self::NAMETAG]);
             $pk = new SetActorDataPacket();
-            $pk->entityRuntimeId = $this->getId();
+            $pk->actorRuntimeId = $this->getId();
             $pk->metadata = $playerData;
             $p->dataPacket($pk);
 
@@ -70,7 +70,7 @@ trait ALEntityTrait {
                 $visibility = 2;
             }
         }
-        $scale = $this->getNetworkProperties()->getFloat(Entity::DATA_SCALE);
+        $scale = $this->getNetworkProperties()->getFloat(EntityMetadataProperties::SCALE);
         $this->namedtag->setInt("NameVisibility", $visibility, true);
         $this->namedtag->setFloat("Scale", $scale, true);
     }
