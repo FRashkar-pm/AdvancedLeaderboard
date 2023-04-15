@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Rushil13579\AdvancedLeaderboards;
 
 use pocketmine\player\Player;
-use pocketmine\entity\{Skin,Human};
+use pocketmine\entity\{Skin,Human, Entity};
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataTypes;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
 use Rushil13579\AdvancedLeaderboards\Main;
 use Rushil13579\AdvancedLeaderboards\ALEntityTrait;
 
