@@ -31,12 +31,12 @@ trait ALEntityTrait {
 
     abstract public function sendNameTag(Player $player): void;
 
-    abstract public function setGenericFlag(int $flag, bool $value = true): void;
+    //abstract public function setGenericFlag(int $flag, bool $value = true): void;
 
     public function prepareMetadata(): void {
-        $this->setGenericFlag(EntityMetadataFlags::IMMOBILE, true);
+        $this->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::IMMOBILE, true);
         if (!$this->namedtag->getTag("Scale") instanceof FloatTag) {
-            $this->namedtag->setFloat("Scale", 1.0, true);
+            $this->namedtag->setFloat("Scale", 1.0);
         }
         $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, $this->namedtag->getFloat("Scale"));
     }
