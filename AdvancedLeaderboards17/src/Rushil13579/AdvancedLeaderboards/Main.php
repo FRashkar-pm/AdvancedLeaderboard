@@ -382,7 +382,7 @@ class Main extends PluginBase {
 
     public function spawnLeaderboard(Player $player, $leaderboard){
         $nbt = $this->generateNBT($player, $leaderboard);
-        $entity = new ALEntity($player->getWorld(), $nbt);
+        $entity = new ALEntity($player->getPosition()->getWorld(), $nbt);
         $entity->setMaxHealth(1);
         $entity->setImmobile();
         $entity->spawnToAll();
@@ -403,7 +403,7 @@ class Main extends PluginBase {
 
     public function removeLeaderboards($leaderboard){
         if($leaderboard === 'all'){
-            foreach($this->getServer()->getWorlds() as $level){
+            foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         $entity->flagForDespawn();
@@ -411,7 +411,7 @@ class Main extends PluginBase {
                 }
             }
         } else {
-            foreach($this->getServer()->getWorlds() as $level){
+            foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
                 foreach($level->getEntities() as $entity){
                     if($this->isALEntity($entity) !== null){
                         if($this->typeOfALEntity($entity) === $leaderboard){
