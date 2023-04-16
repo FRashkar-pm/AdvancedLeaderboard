@@ -47,10 +47,9 @@ class ALEntity extends Human {
     }
 
     public function sendNameTag(Player $player): void {
-        $dp = $player->getDisplayName();
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [self::DATA_NAMETAG, $dp];
+        $pk->metadata = [self::DATA_NAMETAG => self::DATA_TYPE_STRING, $this->getPlayerDisplayName($player)];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
