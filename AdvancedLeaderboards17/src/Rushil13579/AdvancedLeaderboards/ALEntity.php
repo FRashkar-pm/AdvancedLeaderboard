@@ -45,7 +45,7 @@ class ALEntity extends Human {
     }
     
     public function getPacketSerializer(): PacketSerializer{
-        return;
+        return true;
     }
 
     public function sendNameTag(Player $player): void {
