@@ -23,6 +23,7 @@ class ALEntity extends Human {
     use ALEntityTrait;
     
     public const DATA_NAMETAG = EntityMetadataProperties::NAMETAG;
+    public const DATA_TYPE_STRING = EntityMetadataTypes::STRING;
     
     public $nametag = "";
 
@@ -49,7 +50,7 @@ class ALEntity extends Human {
         $dp = $player->getDisplayName();
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [self::DATA_NAMETAG, $this->nametag];
+        $pk->metadata = [self::DATA_NAMETAG, self::DATA_TYPE_STRING];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
