@@ -43,16 +43,12 @@ class ALEntity extends Human {
         $nbt->setFloat("Scale", $scale);
         return $nbt;
     }
-    
-    public function getPacketSerializer(): PacketSerializer{
-        return true;
-    }
 
     public function sendNameTag(Player $player): void {
         $dp = $player->getDisplayName();
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = $this->getPacketSerializer()->getEntityMetadata([self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $dp]]);
+        $pk->metadata = [$dp];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
