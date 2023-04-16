@@ -13,6 +13,7 @@ use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataTypes;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
+use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use Rushil13579\AdvancedLeaderboards\Main;
 use Rushil13579\AdvancedLeaderboards\ALEntityTrait;
 
@@ -20,8 +21,8 @@ class ALEntity extends Human {
 
     use ALEntityTrait;
     
-    public const DATA_NAMETAG = EntityMetadataProperties::NAMETAG;
-    public const DATA_TYPE_STRING = EntityMetadataTypes::STRING;
+    //public const DATA_NAMETAG = EntityMetadataProperties::NAMETAG;
+    //public const DATA_TYPE_STRING = EntityMetadataTypes::STRING;
 
     public $height = 0.0;
     public $width = 0.0;
@@ -35,7 +36,7 @@ class ALEntity extends Human {
                 $visibility = 2;
             }
         }
-        $scale = $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, true);
+        $scale = $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, 0.0);
         $nbt->setInt("NameVisibility", $visibility);
         $nbt->setFloat("Scale", $scale);
         return $nbt;
@@ -44,9 +45,7 @@ class ALEntity extends Human {
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $in = new PacketSerializer();
-        $pk->metadata = $in->getEntityMetadata();
-        $pk->metadata = [self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $this->getDisplayName($player)]];
+        $pk->metadata = PacketSerializer::getEntityMetadata([self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $player->getDisplayName()]]);
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
