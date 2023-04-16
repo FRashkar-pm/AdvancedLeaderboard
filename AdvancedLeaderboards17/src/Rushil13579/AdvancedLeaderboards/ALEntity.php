@@ -13,6 +13,7 @@ use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataTypes;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
+use pocketmine\network\mcpe\protocol\types\entity\FloatMetadataProperty;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use Rushil13579\AdvancedLeaderboards\Main;
 use Rushil13579\AdvancedLeaderboards\ALEntityTrait;
@@ -42,11 +43,13 @@ class ALEntity extends Human {
         $nbt->setFloat("Scale", $scale);
         return $nbt;
     }
+    
+    abstract public function getPacketSerializer() : PacketSerializer;
 
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = PacketSerializer::getInstance()->getEntityMetadata([self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $player->getDisplayName()]]);
+        $pk->metadata = $this->getPacketSerializer()->getEntityMetadata([self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $player->getDisplayName()]]);
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
