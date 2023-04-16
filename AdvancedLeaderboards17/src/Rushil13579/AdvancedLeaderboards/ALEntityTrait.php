@@ -32,7 +32,7 @@ trait ALEntityTrait {
 
     abstract public function sendNameTag(Player $player): void;
     
-    abstract public function getPacketSerializer() : PacketSerializer;
+    //abstract public function getPacketSerializer() : PacketSerializer;
 
     //abstract public function setGenericFlag(int $flag, bool $value = true): void;
 
