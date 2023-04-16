@@ -22,8 +22,6 @@ class ALEntity extends Human {
 
     use ALEntityTrait;
     
-    public PacketSerializer $ps;
-    
     public const DATA_NAMETAG = EntityMetadataProperties::NAMETAG;
     public const DATA_TYPE_STRING = EntityMetadataTypes::STRING;
 
@@ -47,13 +45,14 @@ class ALEntity extends Human {
     }
     
     public function getPacketSerializer(): PacketSerializer{
-        return $this->ps = $ps;
+        return;
     }
 
     public function sendNameTag(Player $player): void {
+        $dp = $player->getDisplayName();
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = $this->getPacketSerializer()->getEntityMetadata([$player->getDisplayName()]);
+        $pk->metadata = $this->getPacketSerializer()->getEntityMetadata([self::DATA_NAMETAG => [self::DATA_TYPE_STRING, $dp]]);
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
