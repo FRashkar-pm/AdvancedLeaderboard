@@ -438,7 +438,7 @@ class Main extends PluginBase {
         if($entity instanceof ALEntity){
             return ' ';
         }else{
-	    return null;
+	    return false;
 	}
     }
 
