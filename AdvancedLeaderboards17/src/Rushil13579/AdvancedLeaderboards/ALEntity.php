@@ -36,7 +36,7 @@ class ALEntity extends Human {
                 $visibility = 2;
             }
         }
-        $scale = EntityMetadataProperties::SCALE => new FloatMetadataProperty(0.0);
+        $scale = [EntityMetadataProperties::SCALE => new FloatMetadataProperty(0.0)];
         //$scale = $this->getNetworkProperties()->setFloat(EntityMetadataProperties::SCALE, 0.0, true);
         $nbt->setInt("NameVisibility", $visibility);
         $nbt->setFloat("Scale", $scale);
