@@ -26,8 +26,11 @@ use Rushil13579\AdvancedLeaderboards\ALEntity;
 
 class Main extends PluginBase {
 
+    public const TAG_POS = "Pos";
+    public ?ALEntity $ale = null;
+	    
     public $cfg;
-
+    
     public $joins;
     public $kills;
     public $deaths;
@@ -389,8 +392,13 @@ class Main extends PluginBase {
         $this->updateLeaderboard($entity, $leaderboard);
     }
 
-    public function generateNBT(Player $player, $leaderboard){
-        $nbt = Entity::createBaseNBT(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 0.5, $player->getPosition()->getZ()));
+    public function generateNBT(Player $player, $leaderboard): CompoundTag{
+	$nbt = CompoundTag::create()
+		->setTag(self::TAG_POS, new ListTag([
+			new DoubleTag($player->getPosition()->getX()),
+			new DoubleTag($player->getPosition()->getY() + 0.5),
+			new DoubleTag($player->getPosition()->getZ())
+			]));
         $nbt->setString('Type', $leaderboard);
         $skin = new Skin("Standard_Custom", str_repeat("\x00", 8192));
         $nbt->setTag(new CompoundTag("Skin", [
@@ -423,11 +431,11 @@ class Main extends PluginBase {
         }
     }
 
-    public function isALEntity(ALEntity $entity){
+    public function isALEntity(ALEntity $entity): ?ALEntity{
         if($entity instanceof ALEntity){
             return ' ';
         }
-        return null;
+        return $ale;
     }
 
     public function typeOfALEntity(ALEntity $entity){
