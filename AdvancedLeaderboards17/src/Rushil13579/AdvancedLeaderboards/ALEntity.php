@@ -18,7 +18,7 @@ use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use Rushil13579\AdvancedLeaderboards\Main;
 use Rushil13579\AdvancedLeaderboards\ALEntityTrait;
 
-class ALEntity extends Entity{
+class ALEntity extends Human{
 
     use ALEntityTrait;
     
