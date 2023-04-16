@@ -48,7 +48,7 @@ class ALEntity extends Human {
         $dp = $player->getDisplayName();
         $pk = new SetActorDataPacket();
         $pk->actorRuntimeId = $this->getId();
-        $pk->metadata = [$dp];
+        $pk->metadata = [self::DATA_NAMETAG => self::DATA_TYPE_STRING];
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
