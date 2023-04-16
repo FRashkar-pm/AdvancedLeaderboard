@@ -3,7 +3,7 @@ main: Rushil13579\AdvancedLeaderboards\Main
 api: 4.0.0
 version: 1.0.2-beta
 author: Rushil13579
-mcpe-protocol: [554]
+mcpe-protocol: [554, 560, 575]
 softdepend: [EconomyAPI,BedrockEconomy]
 
 permissions:
