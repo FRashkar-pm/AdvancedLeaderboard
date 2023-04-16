@@ -43,6 +43,9 @@ class ALEntity extends Human {
         $nbt->setFloat("Scale", $scale);
         return $nbt;
     }
+    
+    public function getPacketSerializer(): PacketSerializer{
+    }
 
     public function sendNameTag(Player $player): void {
         $pk = new SetActorDataPacket();
