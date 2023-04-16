@@ -6,6 +6,8 @@ use pocketmine\Server;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\entity\Skin;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\utils\Config;
@@ -27,7 +29,6 @@ use Rushil13579\AdvancedLeaderboards\ALEntity;
 class Main extends PluginBase {
 
     public const TAG_POS = "Pos";
-    public ?ALEntity $ale = null;
 	    
     public $cfg;
     
@@ -401,11 +402,13 @@ class Main extends PluginBase {
 			]));
         $nbt->setString('Type', $leaderboard);
         $skin = new Skin("Standard_Custom", str_repeat("\x00", 8192));
-        $nbt->setTag(new CompoundTag("Skin", [
+	$nbt->setString("Data", $skin->getSkinData());
+	$nbt->setString("Name", $skin->getSkinId());
+        /*$nbt->setTag(new CompoundTag("Skin", [
             new StringTag("Data", $skin->getSkinData()),
             new StringTag("Name", $skin->getSkinId())
             ]
-        ));
+        ));*/
         return $nbt;
     }
 
@@ -431,11 +434,10 @@ class Main extends PluginBase {
         }
     }
 
-    public function isALEntity(ALEntity $entity): ?ALEntity{
-        if($entity instanceof ALEntity){
-            return ' ';
+    public function isALEntity(ALEntity $entity = ' '){
+        if(!$entity instanceof ALEntity){
+            return null;
         }
-        return $ale;
     }
 
     public function typeOfALEntity(ALEntity $entity){
