@@ -437,9 +437,8 @@ class Main extends PluginBase {
     public function isALEntity(ALEntity $entity){
         if($entity instanceof ALEntity){
             return ' ';
-        }else{
-	    $entity = null;
-	}
+        }
+	return $entity = null;
     }
 
     public function typeOfALEntity(ALEntity $entity){
