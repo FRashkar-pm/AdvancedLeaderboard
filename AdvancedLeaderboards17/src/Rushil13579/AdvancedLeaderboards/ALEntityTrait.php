@@ -78,7 +78,7 @@ trait ALEntityTrait {
         $this->namedtag->setFloat("Scale", $scale, true);
     }*/
 
-    public function getDisplayName(Player $player): string {
+    public function getPlayerDisplayName(Player $player): string {
         $vars = [
             "{name}" => $player->getName(),
             "{display_name}" => $player->getName(),
